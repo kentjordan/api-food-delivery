@@ -9,10 +9,27 @@ import { CheckoutModule } from './checkout/checkout.module';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentModule } from './payment/payment.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { DatabaseModule } from './database/database.module';
+import { JwtModule } from './jwt/jwt.module';
 
 @Module({
-  imports: [UsersModule, ProductsModule, AddToCartModule, CartModule, CheckoutModule, OrdersModule, PaymentModule, AnalyticsModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    UsersModule,
+    ProductsModule,
+    AddToCartModule,
+    CartModule,
+    CheckoutModule,
+    OrdersModule,
+    PaymentModule,
+    AnalyticsModule,
+    DatabaseModule,
+    JwtModule
+  ],
+  controllers: [
+    AppController
+  ],
+  providers: [
+    AppService
+  ],
 })
 export class AppModule { }
