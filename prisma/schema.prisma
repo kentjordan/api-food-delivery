@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model cart {
+  id                  String        @id @default(dbgenerated("(uuid())")) @db.Char(56)
+  created_at          DateTime?     @default(now()) @db.Timestamp(0)
+  updated_at          DateTime?     @db.Timestamp(0)
+  product_instruction String?       @db.Text
+  product_id          String        @db.Char(56)
+  product_extra_id    String        @db.Char(56)
+  user_id             String        @db.Char(56)
+  store_id            String        @db.Char(56)
+  product             product       @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_ibfk_1")
+  product_extra       product_extra @relation(fields: [product_extra_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_ibfk_2")
+  user                user          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_ibfk_3")
+  store               store         @relation(fields: [store_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_ibfk_4")
+
+  @@index([product_extra_id], map: "product_extra_id")
+  @@index([product_id], map: "product_id")
+  @@index([store_id], map: "store_id")
+  @@index([user_id], map: "user_id")
+}
+
+model order_item {
+  id                                    String                  @id @default(dbgenerated("(uuid())")) @db.Char(56)
+  created_at                            DateTime?               @default(now()) @db.Timestamp(0)
+  updated_at                            DateTime?               @db.Timestamp(0)
+  order_status                          order_item_order_status
+  payment                               String                  @db.Char(56)
+  customer_address                      String                  @db.Char(56)
+  delivery_man_id                       String                  @db.Char(56)
+  store_id                              String                  @db.Char(56)
+  product_id                            String                  @db.Char(56)
+  product_extra_id                      String                  @db.Char(56)
+  customer_id                           String                  @db.Char(56)
+  user_order_item_delivery_man_idTouser user                    @relation("order_item_delivery_man_idTouser", fields: [delivery_man_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_item_ibfk_1")
+  store                                 store                   @relation(fields: [store_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_item_ibfk_2")
+  product                               product                 @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_item_ibfk_3")
+  product_extra                         product_extra           @relation(fields: [product_extra_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_item_ibfk_4")
+  user_order_item_customer_idTouser     user                    @relation("order_item_customer_idTouser", fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_item_ibfk_5")
+
+  @@index([customer_id], map: "customer_id")
+  @@index([delivery_man_id], map: "delivery_man_id")
+  @@index([product_extra_id], map: "product_extra_id")
+  @@index([product_id], map: "product_id")
+  @@index([store_id], map: "store_id")
+}
+
+model payment {
+  id             String                 @id @default(dbgenerated("(uuid())")) @db.Char(56)
+  created_at     DateTime?              @default(now()) @db.Timestamp(0)
+  updated_at     DateTime?              @db.Timestamp(0)
+  payment_type   String                 @db.VarChar(255)
+  payment_status payment_payment_status
+  reference      String                 @db.VarChar(255)
+}
+
+model product {
+  id            String          @id @default(dbgenerated("(uuid())")) @db.Char(56)
+  created_at    DateTime?       @default(now()) @db.Timestamp(0)
+  updated_at    DateTime?       @db.Timestamp(0)
+  title         String          @db.VarChar(255)
+  description   String?         @db.Text
+  variety       String?         @db.VarChar(255)
+  price         Float           @db.Float
+  store_id      String          @db.Char(56)
+  cart          cart[]
+  order_item    order_item[]
+  store         store           @relation(fields: [store_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_ibfk_1")
+  product_extra product_extra[]
+  product_image product_image[]
+
+  @@index([store_id], map: "store_id")
+}
+
+model product_extra {
+  id          String       @id @default(dbgenerated("(uuid())")) @db.Char(56)
+  created_at  DateTime?    @default(now()) @db.Timestamp(0)
+  updated_at  DateTime?    @db.Timestamp(0)
+  title       String       @db.VarChar(255)
+  description String?      @db.Text
+  price       Float        @db.Float
+  product_id  String       @db.Char(56)
+  cart        cart[]
+  order_item  order_item[]
+  product     product      @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_extra_ibfk_1")
+
+  @@index([product_id], map: "product_id")
+}
+
+model product_image {
+  id         String    @id @default(dbgenerated("(uuid())")) @db.Char(56)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  url        String    @db.Text
+  product_id String    @db.Char(56)
+  product    product   @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_image_ibfk_1")
+
+  @@index([product_id], map: "product_id")
+}
+
+model store {
+  id          String       @id @default(dbgenerated("(uuid())")) @db.Char(56)
+  created_at  DateTime?    @default(now()) @db.Timestamp(0)
+  updated_at  DateTime?    @db.Timestamp(0)
+  name        String       @db.VarChar(255)
+  description String?      @db.Text
+  cart        cart[]
+  order_item  order_item[]
+  product     product[]
+}
+
+model user {
+  id                                          String         @id @default(dbgenerated("(uuid())")) @db.Char(56)
+  created_at                                  DateTime?      @default(now()) @db.Timestamp(0)
+  updated_at                                  DateTime?      @db.Timestamp(0)
+  first_name                                  String         @db.VarChar(64)
+  last_name                                   String         @db.VarChar(64)
+  city                                        String         @db.VarChar(64)
+  barangay                                    String         @db.VarChar(64)
+  email                                       String         @unique(map: "email") @db.VarChar(64)
+  password                                    String         @db.Text
+  gender                                      String?        @db.VarChar(32)
+  role                                        user_role?
+  cart                                        cart[]
+  order_item_order_item_delivery_man_idTouser order_item[]   @relation("order_item_delivery_man_idTouser")
+  order_item_order_item_customer_idTouser     order_item[]   @relation("order_item_customer_idTouser")
+  user_address                                user_address[]
+}
+
+model user_address {
+  id                   String    @id @default(dbgenerated("(uuid())")) @db.Char(56)
+  created_at           DateTime? @default(now()) @db.Timestamp(0)
+  updated_at           DateTime? @db.Timestamp(0)
+  city                 String?   @db.VarChar(255)
+  barangay             String?   @db.VarChar(255)
+  street               String?   @db.VarChar(255)
+  floor_unit_room      String?   @db.VarChar(255)
+  delivery_instruction String?   @db.Text
+  label                String    @db.VarChar(32)
+  use_for_delivery     Boolean?
+  user_id              String    @db.Char(56)
+  user                 user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_address_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+enum user_role {
+  DELIVERY
+  CUSTOMER
+  SELLER
+}
+
+enum order_item_order_status {
+  COMPLETED
+  COOKING
+  IN_TRANSIT
+  CANCELLED
+}
+
+enum payment_payment_status {
+  PAID
+  NOT_PAID
+}
