@@ -46,7 +46,12 @@ CREATE TABLE store(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     updated_at TIMESTAMP,
     name VARCHAR(255) NOT NULL ,
-    description TEXT
+    description TEXT,
+    city VARCHAR(255) NOT NULL,
+    barangay VARCHAR(255) NOT NULL,
+    street VARCHAR(255),
+    store_type VARCHAR(255),
+    cert_number INT NOT NULL UNIQUE
 );
 
 CREATE TABLE product(

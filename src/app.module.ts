@@ -11,6 +11,7 @@ import { PaymentModule } from './payment/payment.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { DatabaseModule } from './database/database.module';
 import { JwtModule } from './jwt/jwt.module';
+import { StoresModule } from './stores/stores.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { JwtModule } from './jwt/jwt.module';
     PaymentModule,
     AnalyticsModule,
     DatabaseModule,
-    JwtModule
+    JwtModule,
+    StoresModule
   ],
   controllers: [
     AppController

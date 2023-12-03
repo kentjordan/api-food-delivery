@@ -111,6 +111,11 @@ model store {
   updated_at  DateTime?    @db.Timestamp(0)
   name        String       @db.VarChar(255)
   description String?      @db.Text
+  city        String       @db.VarChar(255)
+  barangay    String       @db.VarChar(255)
+  street      String?      @db.VarChar(255)
+  store_type  String?      @db.VarChar(255)
+  cert_number Int
   cart        cart[]
   order_item  order_item[]
   product     product[]
