@@ -7,7 +7,7 @@ import Role from "src/decorators/role.decorator";
 
 interface DecodedJWT {
     id: string,
-    role: 'CUSTOMER' | 'DELIVERY' | 'SELLER',
+    role: 'DELIVERY' | 'CUSTOMER' | 'SYSTEM_ADMIN' | 'STORE_EMPLOYEE' | 'STORE_ADMIN',
     iat: number,
     exp: number
 }

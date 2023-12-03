@@ -23,7 +23,7 @@ CREATE TABLE user(
     email VARCHAR(64) NOT NULL UNIQUE,
     password TEXT NOT NULL ,
     gender VARCHAR(32),
-    role ENUM('DELIVERY', 'CUSTOMER', 'SELLER', 'ADMIN')
+    role ENUM('DELIVERY', 'CUSTOMER', 'SYSTEM_ADMIN', 'STORE_EMPLOYEE', 'STORE_ADMIN')
 );
 
 CREATE TABLE user_address(

@@ -17,7 +17,7 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @Role([Roles.ADMIN])
+  @Role([Roles.SYSTEM_ADMIN])
   @UseGuards(JWTGuard)
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -27,14 +27,14 @@ export class UsersController {
   }
 
   @Get()
-  @Role([Roles.ADMIN])
+  @Role([Roles.SYSTEM_ADMIN])
   @UseGuards(JWTGuard)
   findAll() {
     return this.usersService.findAll();
   }
 
   @Delete(':id')
-  @Role([Roles.ADMIN])
+  @Role([Roles.SYSTEM_ADMIN])
   @UseGuards(JWTGuard)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);

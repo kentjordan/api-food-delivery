@@ -115,7 +115,7 @@ model store {
   barangay    String       @db.VarChar(255)
   street      String?      @db.VarChar(255)
   store_type  String?      @db.VarChar(255)
-  cert_number Int
+  cert_number Int          @unique(map: "cert_number")
   cart        cart[]
   order_item  order_item[]
   product     product[]
@@ -171,6 +171,7 @@ enum payment_payment_status {
 enum user_role {
   DELIVERY
   CUSTOMER
-  SELLER
-  ADMIN
+  SYSTEM_ADMIN
+  STORE_EMPLOYEE
+  STORE_ADMIN
 }

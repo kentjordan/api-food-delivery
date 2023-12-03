@@ -1,8 +1,9 @@
 enum Roles {
     DELIVERY = 'DELIVERY',
     CUSTOMER = 'CUSTOMER',
-    SELLER = 'SELLER',
-    ADMIN = 'ADMIN'
+    SYSTEM_ADMIN = 'SYSTEM_ADMIN',
+    STORE_EMPLOYEE = 'STORE_EMPLOYEE',
+    STORE_ADMIN = 'STORE_ADMIN'
 }
 
 export default Roles;

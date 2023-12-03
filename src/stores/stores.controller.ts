@@ -12,21 +12,21 @@ export class StoresController {
   constructor(private readonly storesService: StoresService) { }
 
   @Post()
-  @Role([Roles.ADMIN])
+  @Role([Roles.SYSTEM_ADMIN])
   @UseGuards(JWTGuard)
   create(@Body(new BodyValidation(createStoreSchema)) createStoreDto: CreateStoreDto) {
     return this.storesService.create(createStoreDto);
   }
 
   @Get()
-  @Role([Roles.ADMIN])
+  @Role([Roles.SYSTEM_ADMIN])
   @UseGuards(JWTGuard)
   findAll() {
     return this.storesService.findAll();
   }
 
   @Patch(':id')
-  @Role([Roles.ADMIN, Roles.SELLER])
+  @Role([Roles.SYSTEM_ADMIN, Roles.STORE_ADMIN])
   @UseGuards(JWTGuard)
   update(@Param('id', ParseUUIDPipe) id: string,
     @Body(new BodyValidation(updateStoreSchema)) updateStoreDto: UpdateStoreDto) {
@@ -34,7 +34,7 @@ export class StoresController {
   }
 
   @Delete(':id')
-  @Role([Roles.ADMIN])
+  @Role([Roles.SYSTEM_ADMIN])
   @UseGuards(JWTGuard)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.storesService.remove(id);
