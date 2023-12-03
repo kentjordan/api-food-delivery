@@ -86,15 +86,31 @@ CREATE TABLE product_extra(
     FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
+CREATE TABLE product_order_instruction(
+    id CHAR(56) PRIMARY KEY DEFAULT (UUID()),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP,
+    product_order_instruction TEXT,
+    product_id CHAR(56) NOT NULL ,
+    product_extra_id CHAR(56) ,
+    user_id CHAR(56) NOT NULL,
+    store_id CHAR(56) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (product_extra_id) REFERENCES product_extra(id),
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (store_id) REFERENCES store(id)
+);
+
 CREATE TABLE cart(
     id CHAR(56) PRIMARY KEY DEFAULT (UUID()),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     updated_at TIMESTAMP,
-    product_instruction TEXT,
-    product_id CHAR(56) NOT NULL ,
-    product_extra_id CHAR(56) NOT NULL ,
+    product_order_instruction_id CHAR(56),
+    product_id CHAR(56) NOT NULL,
+    product_extra_id CHAR(56),
     user_id CHAR(56) NOT NULL,
     store_id CHAR(56) NOT NULL,
+    FOREIGN KEY (product_order_instruction_id) REFERENCES product_order_instruction(id),
     FOREIGN KEY (product_id) REFERENCES product(id),
     FOREIGN KEY (product_extra_id) REFERENCES product_extra(id),
     FOREIGN KEY (user_id) REFERENCES user(id),
