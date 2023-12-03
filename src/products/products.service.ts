@@ -1,26 +1,71 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, UseFilters } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class ProductsService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+
+  constructor(private readonly db: DatabaseService) { }
+
+  async create(createProductDto: CreateProductDto) {
+
+    const createdProduct = await this.db.product.create({
+      data: createProductDto
+    });
+
+    return {
+      createdProduct,
+      message: 'Product has been successfully CREATED.',
+      statusCode: HttpStatus.OK
+    }
+
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAllStoreProducts(store_id: string) {
+
+    const storeProducts = await this.db.product.findMany({
+      where: { store_id }
+    });
+
+    return {
+      storeProducts,
+      message: 'Store\'s products has been successfully FETCHED.',
+      statusCode: HttpStatus.OK
+    }
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto) {
+
+    const updatedProduct = await this.db.product.update({
+      where: { id },
+      data: {
+        ...updateProductDto,
+        updated_at: new Date().toISOString()
+      }
+    });
+
+    return {
+      updatedProduct,
+      message: 'Product has been successfully UPDATED.',
+      statusCode: HttpStatus.OK
+    }
+
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
-  }
+  async remove(id: string) {
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+    const deletedProduct = await this.db.product.delete({
+      where: { id }
+    });
+
+    return {
+      deletedProduct,
+      message: 'Product has been successfully DELETED.',
+      statusCode: HttpStatus.OK
+    }
+
   }
 }

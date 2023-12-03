@@ -17,99 +17,67 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
 
-    try {
+    const hashedPassword = await argon2.hash(createUserDto.password)
 
-      const hashedPassword = await argon2.hash(createUserDto.password)
+    const userCreated = await this.db.user.create({
+      data: {
+        ...createUserDto,
+        password: hashedPassword
+      },
+    });
 
-      const userCreated = await this.db.user.create({
-        data: {
-          ...createUserDto,
-          password: hashedPassword
-        },
-      });
+    const accessToken = this.jwt.makeAccessToken(userCreated.id, userCreated.role as string)
+    const refreshToken = this.jwt.makeRefreshToken(accessToken);
 
-      const accessToken = this.jwt.makeAccessToken(userCreated.id, userCreated.role as string)
-      const refreshToken = this.jwt.makeRefreshToken(accessToken);
-
-      return {
-        accessToken,
-        refreshToken
-      }
-
-    } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        switch (error.code) {
-          case PrismaError.UniqueConstraintViolation:
-            throw new UnprocessableEntityException('Email is not available.');
-          default:
-            throw new BadRequestException();
-        }
-      }
+    return {
+      accessToken,
+      refreshToken
     }
+
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    try {
-      const updatedUser = await this.db.user.update({
-        data: {
-          ...updateUserDto,
-          updated_at: new Date().toISOString()
-        },
-        where: {
-          id
-        }
-      });
 
-      return {
-        updatedUser: {
-          ...updatedUser,
-          password: undefined
-        },
-        message: "User has been successfully updated.",
-        statusCode: HttpStatus.OK
+    const updatedUser = await this.db.user.update({
+      data: {
+        ...updateUserDto,
+        updated_at: new Date().toISOString()
+      },
+      where: {
+        id
       }
+    });
 
-    } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        switch (error.code) {
-          case PrismaError.RecordsNotFound:
-            throw new NotFoundException('Record to update was not found.');
-          default:
-            throw new BadRequestException();
-        }
-      }
-      throw new BadRequestException();
+    return {
+      updatedUser: {
+        ...updatedUser,
+        password: undefined
+      },
+      message: "User has been successfully updated.",
+      statusCode: HttpStatus.OK
     }
+
   }
 
   async remove(id: string) {
 
-    try {
-      const deletedUser = await this.db.user.delete({ where: { id } });
+    const deletedUser = await this.db.user.delete({ where: { id } });
 
-      return {
-        deletedUser: {
-          ...deletedUser,
-          password: undefined
-        },
-        message: "User has been successfully deleted.",
-        statusCode: HttpStatus.OK
-      }
-    } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        switch (error.code) {
-          case PrismaError.RecordsNotFound:
-            throw new NotFoundException('Record to delete was not found.');
-          default:
-            throw new BadRequestException();
-        }
-      }
-      throw new BadRequestException();
+    return {
+      deletedUser: {
+        ...deletedUser,
+        password: undefined
+      },
+      message: "User has been successfully deleted.",
+      statusCode: HttpStatus.OK
     }
+
   }
 
   async findAll() {
+
     const users = await this.db.user.findMany();
+
     return users.map((user, index) => {
       return {
         ...user,
