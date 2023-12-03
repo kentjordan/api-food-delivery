@@ -51,14 +51,17 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
       const updatedUser = await this.db.user.update({
-        data: updateUserDto,
+        data: {
+          ...updateUserDto,
+          updated_at: new Date().toISOString()
+        },
         where: {
           id
         }
       });
 
       return {
-        updated_user: {
+        updatedUser: {
           ...updatedUser,
           password: undefined
         },
@@ -85,7 +88,7 @@ export class UsersService {
       const deletedUser = await this.db.user.delete({ where: { id } });
 
       return {
-        deleted_user: {
+        deletedUser: {
           ...deletedUser,
           password: undefined
         },
