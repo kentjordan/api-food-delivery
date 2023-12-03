@@ -2,19 +2,27 @@ import { Injectable } from '@nestjs/common';
 import { JwtService as JwtServiceCore } from '@nestjs/jwt';
 
 @Injectable()
-export class JwtService {
+export class JwtService extends JwtServiceCore {
 
     private ACCESS_TOKEN_EXPIRY = '8h';
     private REFRESH_TOKEN_EXPIRY = '30d';
 
-    constructor(private readonly jwt: JwtServiceCore) { }
+    constructor() {
+        super();
+    }
 
     makeAccessToken(id: string, role: string) {
-        return this.jwt.sign({ id, role }, { expiresIn: this.ACCESS_TOKEN_EXPIRY });
+        return this.sign({ id, role }, {
+            secret: process.env.SECRET_KEY,
+            expiresIn: this.ACCESS_TOKEN_EXPIRY
+        });
     }
 
     makeRefreshToken(access_token: string) {
-        return this.jwt.sign({ access_token }, { expiresIn: this.REFRESH_TOKEN_EXPIRY });
+        return this.sign({ access_token }, {
+            secret: process.env.SECRET_KEY,
+            expiresIn: this.REFRESH_TOKEN_EXPIRY
+        });
     }
 
 }

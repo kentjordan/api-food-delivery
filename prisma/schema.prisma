@@ -151,12 +151,6 @@ model user_address {
   @@index([user_id], map: "user_id")
 }
 
-enum user_role {
-  DELIVERY
-  CUSTOMER
-  SELLER
-}
-
 enum order_item_order_status {
   COMPLETED
   COOKING
@@ -167,4 +161,11 @@ enum order_item_order_status {
 enum payment_payment_status {
   PAID
   NOT_PAID
+}
+
+enum user_role {
+  DELIVERY
+  CUSTOMER
+  SELLER
+  ADMIN
 }

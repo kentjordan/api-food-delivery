@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DatabaseService } from 'src/database/database.service';
@@ -48,19 +48,71 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    try {
+      const updatedUser = await this.db.user.update({
+        data: updateUserDto,
+        where: {
+          id
+        }
+      });
+
+      return {
+        updated_user: {
+          ...updatedUser,
+          password: undefined
+        },
+        message: "User has been successfully updated.",
+        statusCode: HttpStatus.OK
+      }
+
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        switch (error.code) {
+          case PrismaError.RecordsNotFound:
+            throw new NotFoundException('Record to update was not found.');
+          default:
+            throw new BadRequestException();
+        }
+      }
+      throw new BadRequestException();
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async remove(id: string) {
+
+    try {
+      const deletedUser = await this.db.user.delete({ where: { id } });
+
+      return {
+        deleted_user: {
+          ...deletedUser,
+          password: undefined
+        },
+        message: "User has been successfully deleted.",
+        statusCode: HttpStatus.OK
+      }
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        switch (error.code) {
+          case PrismaError.RecordsNotFound:
+            throw new NotFoundException('Record to delete was not found.');
+          default:
+            throw new BadRequestException();
+        }
+      }
+      throw new BadRequestException();
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  async findAll() {
+    const users = await this.db.user.findMany();
+    return users.map((user, index) => {
+      return {
+        ...user,
+        password: undefined
+      };
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

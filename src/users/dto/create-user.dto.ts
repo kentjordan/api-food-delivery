@@ -8,7 +8,7 @@ export const createUserSchema = z.object({
     city: z.string(),
     barangay: z.string(),
     gender: z.string().optional(),
-    role: z.enum(['DELIVERY', 'CUSTOMER', 'SELLER'])
+    role: z.enum(['DELIVERY', 'CUSTOMER', 'SELLER', 'ADMIN'])
 }).strict();
 
 export type CreateUserDto = z.infer<typeof createUserSchema>;

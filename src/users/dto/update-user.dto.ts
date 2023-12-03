@@ -8,7 +8,7 @@ export const updateUserSchema = z.object({
     city: z.string().optional(),
     barangay: z.string().optional(),
     gender: z.string().optional(),
-    role: z.enum(['DELIVERY', 'CUSTOMER', 'SELLER']).optional()
+    role: z.enum(['DELIVERY', 'CUSTOMER', 'SELLER', 'ADMIN']).optional()
 }).strict();
 
 export type UpdateUserDto = z.infer<typeof updateUserSchema>;
