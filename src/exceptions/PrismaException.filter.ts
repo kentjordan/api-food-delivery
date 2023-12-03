@@ -19,6 +19,15 @@ export class PrismaExceptionFilter implements ExceptionFilter {
         const res: Response = await host.switchToHttp().getResponse();
 
         switch (exception.code) {
+            case PrismaError.ForeignConstraintViolation:
+                this.response({
+                    res,
+                    message: 'Given id was not found on other resource.',
+                    error: "Not found",
+                    statusCode: HttpStatus.NOT_FOUND
+                });
+                break;
+
             case PrismaError.RecordsNotFound:
                 this.response({
                     res,
