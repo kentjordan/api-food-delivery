@@ -1,3 +1,7 @@
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 import 'dotenv/config'
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
