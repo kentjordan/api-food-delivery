@@ -4,6 +4,7 @@ import { Request } from "express";
 import { Observable } from "rxjs";
 import { Reflector } from "@nestjs/core";
 import Role from "src/decorators/role.decorator";
+import { TokenExpiredError } from "@nestjs/jwt";
 
 interface DecodedJWT {
     id: string,
@@ -28,16 +29,19 @@ export class JWTGuard implements CanActivate {
 
         if (token) {
 
-            const verifiedUserToken: DecodedJWT = this.jwt.verify(token, { secret: process.env.SECRET_KEY });
-
-            if ((verifiedUserToken.exp > Math.ceil(Date.now() / 1000))) {
+            try {
+                const verifiedUserToken: DecodedJWT = this.jwt.verify(token, { secret: process.env.SECRET_KEY });
 
                 if (!role.includes(verifiedUserToken.role)) {
                     throw new ForbiddenException('This resource is restricted to authorized administrators only.')
                 }
 
-                return true
+            } catch (error) {
+                if (error instanceof TokenExpiredError) {
+                    throw new ForbiddenException('Log in session was expired.');
+                }
             }
+
         }
         throw new ForbiddenException('Unauthorized')
     }
