@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS user_address;
 DROP TABLE IF EXISTS order_item;
 DROP TABLE IF EXISTS product_extra;
 DROP TABLE IF EXISTS product_image;
+DROP TABLE IF EXISTS cart_item_instruction;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS store;
 DROP TABLE IF EXISTS payment;
@@ -86,17 +87,15 @@ CREATE TABLE product_extra(
     FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE TABLE product_order_instruction(
+CREATE TABLE cart_item_instruction(
     id CHAR(56) PRIMARY KEY DEFAULT (UUID()),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     updated_at TIMESTAMP,
-    product_order_instruction TEXT,
+    instruction TEXT,
     product_id CHAR(56) NOT NULL ,
-    product_extra_id CHAR(56) ,
     user_id CHAR(56) NOT NULL,
     store_id CHAR(56) NOT NULL,
     FOREIGN KEY (product_id) REFERENCES product(id),
-    FOREIGN KEY (product_extra_id) REFERENCES product_extra(id),
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (store_id) REFERENCES store(id)
 );
@@ -105,12 +104,12 @@ CREATE TABLE cart(
     id CHAR(56) PRIMARY KEY DEFAULT (UUID()),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     updated_at TIMESTAMP,
-    product_order_instruction_id CHAR(56),
+    cart_item_instruction_id CHAR(56),
     product_id CHAR(56) NOT NULL,
     product_extra_id CHAR(56),
     user_id CHAR(56) NOT NULL,
     store_id CHAR(56) NOT NULL,
-    FOREIGN KEY (product_order_instruction_id) REFERENCES product_order_instruction(id),
+    FOREIGN KEY (cart_item_instruction_id) REFERENCES cart_item_instruction(id),
     FOREIGN KEY (product_id) REFERENCES product(id),
     FOREIGN KEY (product_extra_id) REFERENCES product_extra(id),
     FOREIGN KEY (user_id) REFERENCES user(id),
