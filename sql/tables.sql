@@ -52,7 +52,7 @@ CREATE TABLE store(
     barangay VARCHAR(255) NOT NULL,
     street VARCHAR(255),
     store_type VARCHAR(255),
-    cert_number INT NOT NULL UNIQUE
+    cert_number BIGINT NOT NULL UNIQUE
 );
 
 CREATE TABLE product(
