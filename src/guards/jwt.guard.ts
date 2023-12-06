@@ -36,7 +36,10 @@ export class JWTGuard implements CanActivate {
                     throw new ForbiddenException('This resource is restricted to authorized administrators only.')
                 }
 
+                return true;
+
             } catch (error) {
+
                 if (error instanceof TokenExpiredError) {
                     throw new ForbiddenException('Log in session was expired.');
                 }
