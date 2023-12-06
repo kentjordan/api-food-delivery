@@ -11,6 +11,8 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { DatabaseModule } from './database/database.module';
 import { JwtModule } from './jwt/jwt.module';
 import { StoresModule } from './stores/stores.module';
+import { AuthModule } from './auth/auth.module';
+import { Argon2Module } from './argon2/argon2.module';
 
 @Module({
   imports: [
@@ -23,7 +25,9 @@ import { StoresModule } from './stores/stores.module';
     AnalyticsModule,
     DatabaseModule,
     JwtModule,
-    StoresModule
+    StoresModule,
+    AuthModule,
+    Argon2Module
   ],
   controllers: [
     AppController
